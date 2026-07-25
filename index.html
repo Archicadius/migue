@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<title>Migue</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="theme-color" content="#0d0f14">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Migue">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<style>
+  :root{
+    --bg:#0d0f14; --card:#171a22; --line:#272c38;
+    --text:#eef1f7; --dim:#8d95a8;
+    --ok:#35c66b; --no:#e5484d; --accent:#6ea8fe;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    display:flex; flex-direction:column; overflow:hidden;
+    padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    user-select:none; -webkit-user-select:none;
+  }
+  .screen{flex:1; display:none; flex-direction:column; min-height:0}
+  .screen.on{display:flex}
+
+  /* ---------- шапка ---------- */
+  header{
+    display:flex; align-items:center; justify-content:space-between;
+    width:min(100%, 620px); margin:0 auto;
+    padding:12px 18px 6px; flex:0 0 auto;
+  }
+  .brand{font-weight:700; letter-spacing:.14em; font-size:15px; color:var(--dim)}
+  .score{font-variant-numeric:tabular-nums; font-size:16px; color:var(--dim)}
+  .bar{height:4px; background:var(--line); width:min(100%, 620px); margin:6px auto 0; border-radius:2px; flex:0 0 auto}
+  .bar > i{display:block; height:100%; width:0; background:var(--accent); border-radius:2px; transition:width .3s}
+
+  /* ---------- вопрос ---------- */
+  main{
+    flex:1; display:flex; flex-direction:column; min-height:0;
+    width:min(100%, 620px); margin:0 auto;
+    padding:10px 18px 18px; gap:12px;
+  }
+  .prompt{text-align:center; font-size:20px; color:var(--text); flex:0 0 auto; margin:0}
+  .microwrap{
+    flex:1 1 auto; min-height:0; display:flex; align-items:center; justify-content:center;
+    margin:0 -18px;              /* фото во всю ширину экрана, без полей */
+    container-type:size;
+  }
+  .micro{
+    width:min(100%, 100cqh); height:auto; aspect-ratio:1/1; object-fit:cover;
+    border-radius:50%; border:2px solid var(--line);
+    box-shadow:0 0 70px rgba(110,168,254,.2);
+    animation:pop .35s ease-out;
+  }
+  @supports not (width: 100cqh){ .micro{ width:min(100%, 56vh) } }
+  @keyframes pop{from{transform:scale(.9); opacity:0} to{transform:scale(1); opacity:1}}
+
+  /* ---------- варианты ---------- */
+  .options{
+    flex:0 0 auto; display:grid; gap:4px;
+    grid-template-columns:repeat(3, 1fr);
+    width:min(100%, 366px); margin:0 auto;
+  }
+  .opt{
+    padding:0; border:0; background:none; cursor:pointer; color:var(--text);
+    display:flex; flex-direction:column; align-items:center; gap:7px; font:inherit;
+    transition:transform .12s;
+  }
+  .opt:active{transform:scale(.94)}
+  /* маленькая картинка-превью */
+  .opt .pic{
+    position:relative; width:86px; max-width:100%; aspect-ratio:1/1;
+    border:2px solid var(--line); border-radius:14px; overflow:hidden;
+    background:var(--card); transition:border-color .2s;
+  }
+  .opt img{width:100%; height:100%; object-fit:cover; display:block}
+  /* подпись — на всю ширину ячейки, крупная */
+  .opt .cap{
+    font-size:16px; line-height:1.15; text-align:center; font-weight:500;
+    letter-spacing:-.01em; hyphens:auto; overflow-wrap:break-word;
+    min-height:2.4em;
+  }
+  .opt .mark{
+    position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+    font-size:40px; opacity:0; transition:opacity .2s; pointer-events:none;
+  }
+  .opt.right .pic{border-color:var(--ok)}
+  .opt.right .mark{opacity:1; background:rgba(53,198,107,.34)}
+  .opt.right .cap{color:var(--ok)}
+  .opt.wrong .pic{border-color:var(--no)}
+  .opt.wrong .mark{opacity:1; background:rgba(229,72,77,.34)}
+  .opt.wrong .cap{color:var(--no)}
+  .options.locked .opt{cursor:default}
+  .options.locked .opt:not(.right):not(.wrong){opacity:.3}
+
+  /* ---------- кнопки / финал ---------- */
+  .center{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; padding:24px; text-align:center}
+  h1{font-size:40px; margin:0; letter-spacing:.02em}
+  .sub{color:var(--dim); font-size:19px; margin:0; max-width:20em; line-height:1.45}
+  .big{font-size:72px; font-weight:700; font-variant-numeric:tabular-nums}
+  button.go{
+    border:0; border-radius:999px; padding:18px 46px; font-size:21px; font-weight:600;
+    background:var(--accent); color:#08111f; cursor:pointer;
+  }
+  button.go:active{transform:scale(.96)}
+  button.ghost{background:transparent; color:var(--dim); border:1px solid var(--line)}
+  .hint{position:absolute; bottom:14px; left:0; right:0; text-align:center; font-size:11px; color:#4b5364}
+</style>
+</head>
+<body>
+
+<!-- ================= СТАРТ ================= -->
+<section id="start" class="screen on">
+  <div class="center">
+    <div style="font-size:66px">🔬</div>
+    <h1>Migue</h1>
+    <p class="sub">Смотрим в микроскоп и угадываем, что это за предмет.</p>
+    <button class="go" id="btn-start">Играть</button>
+  </div>
+  <div class="hint">фотографии — Фёдор</div>
+</section>
+
+<!-- ================= ИГРА ================= -->
+<section id="game" class="screen">
+  <header>
+    <span class="brand">MIGUE</span>
+    <span class="score" id="score">0 / 0</span>
+  </header>
+  <div class="bar"><i id="bar"></i></div>
+  <main>
+    <p class="prompt">Что это под микроскопом?</p>
+    <div class="microwrap"><img id="micro" class="micro" alt=""></div>
+    <div class="options" id="options"></div>
+  </main>
+</section>
+
+<!-- ================= ФИНАЛ ================= -->
+<section id="end" class="screen">
+  <div class="center">
+    <div id="emoji" style="font-size:60px"></div>
+    <div class="big" id="final"></div>
+    <p class="sub" id="verdict"></p>
+    <button class="go" id="btn-again">Ещё раз</button>
+  </div>
+</section>
+
+<script src="data.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  const $ = s => document.querySelector(s);
+  const micro = $("#micro"), optionsEl = $("#options");
+  const scoreEl = $("#score"), barEl = $("#bar");
+
+  const nChoices = Math.min(CHOICES, ITEMS.length);
+  let queue = [], idx = 0, right = 0, busy = false;
+
+  const shuffle = a => { a = a.slice();
+    for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; }
+    return a; };
+
+  function show(id){ document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", s.id === id)); }
+
+  function start(){
+    queue = shuffle(ITEMS); idx = 0; right = 0; busy = false;
+    show("game"); render();
+  }
+
+  function render(){
+    const item = queue[idx];
+    micro.src = "photos/micro/" + item.id + ".jpg";
+    micro.alt = "фотография с микроскопа";
+
+    // варианты: правильный + случайные другие
+    const others = shuffle(ITEMS.filter(x => x.id !== item.id)).slice(0, nChoices - 1);
+    const opts = shuffle([item].concat(others));
+
+    optionsEl.className = "options";
+    optionsEl.style.gridTemplateColumns = "repeat(" + Math.min(opts.length, 3) + ", 1fr)";
+    optionsEl.innerHTML = "";
+    opts.forEach(o => {
+      const b = document.createElement("button");
+      b.className = "opt";
+      b.innerHTML =
+        '<span class="pic">' +
+          '<img src="photos/big/' + o.id + '.jpg" alt="' + o.title + '" loading="eager">' +
+          '<span class="mark"></span>' +
+        '</span>' +
+        '<span class="cap">' + o.title + '</span>';
+      b.addEventListener("click", () => answer(b, o.id === item.id, item.id));
+      optionsEl.appendChild(b);
+    });
+
+    scoreEl.textContent = "✓ " + right + "  ·  " + (idx + 1) + " из " + queue.length;
+    barEl.style.width = (idx / queue.length * 100) + "%";
+  }
+
+  function answer(btn, ok, correctId){
+    if (busy) return;
+    busy = true;
+    optionsEl.classList.add("locked");
+
+    if (ok) right++;
+    scoreEl.textContent = "✓ " + right + "  ·  " + (idx + 1) + " из " + queue.length;
+    btn.classList.add(ok ? "right" : "wrong");
+    btn.querySelector(".mark").textContent = ok ? "✓" : "✕";
+
+    if (!ok) {  // подсветить правильный
+      [...optionsEl.children].forEach(b => {
+        if (b.querySelector("img").src.includes("/" + correctId + ".jpg")) {
+          b.classList.add("right");
+          b.querySelector(".mark").textContent = "✓";
+        }
+      });
+    }
+    if (navigator.vibrate) navigator.vibrate(ok ? 30 : [20, 60, 20]);
+
+    setTimeout(() => {
+      idx++; busy = false;
+      if (idx >= queue.length) finish(); else render();
+    }, ok ? 750 : 1500);
+  }
+
+  function finish(){
+    const total = queue.length;
+    $("#final").textContent = right + " / " + total;
+    const p = right / total;
+    $("#emoji").textContent  = p === 1 ? "🏆" : p >= 0.5 ? "👍" : "🔬";
+    $("#verdict").textContent = p === 1 ? "Все верно! Идеально."
+                             : p >= 0.5 ? "Хорошо! Ещё немного тренировки."
+                             : "Попробуем ещё разок?";
+    show("end");
+  }
+
+  $("#btn-start").addEventListener("click", start);
+  $("#btn-again").addEventListener("click", start);
+
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));
+  }
+})();
+</script>
+</body>
+</html>
