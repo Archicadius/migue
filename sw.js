@@ -1,6 +1,6 @@
 // Service worker: приложение работает офлайн и обновляется само.
 // Меняй VERSION при каждом обновлении, чтобы телефон подхватил новое.
-const VERSION = "migue-v2";
+const VERSION = "migue-v3";
 
 self.addEventListener("install", e => self.skipWaiting());
 

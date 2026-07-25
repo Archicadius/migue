@@ -9,7 +9,8 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Migue">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="icon" href="icons/icon-192.png" type="image/png">
 <style>
   :root{
     --bg:#0d0f14; --card:#171a22; --line:#272c38;
@@ -43,28 +44,27 @@
   main{
     flex:1; display:flex; flex-direction:column; min-height:0;
     width:min(100%, 620px); margin:0 auto;
-    padding:10px 18px 18px; gap:12px;
+    padding:10px 12px 16px; gap:12px;
   }
   .prompt{text-align:center; font-size:20px; color:var(--text); flex:0 0 auto; margin:0}
   .microwrap{
     flex:1 1 auto; min-height:0; display:flex; align-items:center; justify-content:center;
-    margin:0 -18px;              /* фото во всю ширину экрана, без полей */
     container-type:size;
   }
   .micro{
-    width:min(100%, 100cqh); height:auto; aspect-ratio:1/1; object-fit:cover;
+    width:min(80%, 100cqh); height:auto; aspect-ratio:1/1; object-fit:cover;
     border-radius:50%; border:2px solid var(--line);
     box-shadow:0 0 70px rgba(110,168,254,.2);
     animation:pop .35s ease-out;
   }
-  @supports not (width: 100cqh){ .micro{ width:min(100%, 56vh) } }
+  @supports not (width: 100cqh){ .micro{ width:min(80%, 46vh) } }
   @keyframes pop{from{transform:scale(.9); opacity:0} to{transform:scale(1); opacity:1}}
 
   /* ---------- варианты ---------- */
   .options{
-    flex:0 0 auto; display:grid; gap:4px;
+    flex:0 0 auto; display:grid; gap:6px;
     grid-template-columns:repeat(3, 1fr);
-    width:min(100%, 366px); margin:0 auto;
+    width:min(100%, 420px); margin:0 auto;
   }
   .opt{
     padding:0; border:0; background:none; cursor:pointer; color:var(--text);
@@ -74,7 +74,7 @@
   .opt:active{transform:scale(.94)}
   /* маленькая картинка-превью */
   .opt .pic{
-    position:relative; width:86px; max-width:100%; aspect-ratio:1/1;
+    position:relative; width:100%; max-width:136px; aspect-ratio:1/1;
     border:2px solid var(--line); border-radius:14px; overflow:hidden;
     background:var(--card); transition:border-color .2s;
   }
