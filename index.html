@@ -168,7 +168,9 @@
   function show(id){ document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", s.id === id)); }
 
   function start(){
-    queue = shuffle(ITEMS); idx = 0; right = 0; busy = false;
+    queue = shuffle(ITEMS);
+    if (typeof ROUND === "number" && ROUND > 0) queue = queue.slice(0, ROUND);
+    idx = 0; right = 0; busy = false;
     show("game"); render();
   }
 

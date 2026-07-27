@@ -9,11 +9,21 @@
 // ===================================================================
 
 const ITEMS = [
-  { id: "palm",       title: "Ладонь" },
-  { id: "blanket",    title: "Пододеяльник" },
-  { id: "book",       title: "Страница книги" },
-  { id: "turtle-egg", title: "Яйцо черепахи" },
+  { id: "palm",             title: "Ладонь" },
+  { id: "blanket",          title: "Пододеяльник" },
+  { id: "book",             title: "Страница книги" },
+  { id: "turtle-egg",       title: "Яйцо черепахи" },
+  { id: "bougainvillea",    title: "Бугенвиллия" },
+  { id: "hair",             title: "Волос" },
+  { id: "wax",              title: "Воск" },
+  { id: "cicada-wing",      title: "Крыло цикады" },
+  { id: "turtle-shell",     title: "Панцирь черепахи" },
+  { id: "feather",          title: "Перо" },
+  { id: "cleopatra-sand",   title: "Песок Клеопатры" },
 ];
 
 // сколько вариантов ответа показывать в одном вопросе
 const CHOICES = 3;
+
+// сколько вопросов в одной игре (0 — все предметы подряд)
+const ROUND = 0;
