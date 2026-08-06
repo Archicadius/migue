@@ -33,10 +33,14 @@
   header{
     display:flex; align-items:center; justify-content:space-between;
     width:min(100%, 620px); margin:0 auto;
-    padding:12px 18px 6px; flex:0 0 auto;
+    padding:12px 18px 6px; flex:0 0 auto; gap:10px;
   }
   .brand{font-weight:700; letter-spacing:.14em; font-size:15px; color:var(--dim)}
   .score{font-variant-numeric:tabular-nums; font-size:16px; color:var(--dim)}
+  .timer{
+    font-variant-numeric:tabular-nums; font-size:20px; font-weight:600;
+    letter-spacing:.02em; color:var(--text);
+  }
   .bar{height:4px; background:var(--line); width:min(100%, 620px); margin:6px auto 0; border-radius:2px; flex:0 0 auto}
   .bar > i{display:block; height:100%; width:0; background:var(--accent); border-radius:2px; transition:width .3s}
 
@@ -72,14 +76,12 @@
     transition:transform .12s;
   }
   .opt:active{transform:scale(.94)}
-  /* маленькая картинка-превью */
   .opt .pic{
     position:relative; width:100%; max-width:136px; aspect-ratio:1/1;
     border:2px solid var(--line); border-radius:14px; overflow:hidden;
     background:var(--card); transition:border-color .2s;
   }
   .opt img{width:100%; height:100%; object-fit:cover; display:block}
-  /* подпись — на всю ширину ячейки, крупная */
   .opt .cap{
     font-size:16px; line-height:1.15; text-align:center; font-weight:500;
     letter-spacing:-.01em; hyphens:auto; overflow-wrap:break-word;
@@ -98,88 +100,270 @@
   .options.locked .opt{cursor:default}
   .options.locked .opt:not(.right):not(.wrong){opacity:.3}
 
-  /* ---------- кнопки / финал ---------- */
-  .center{flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; padding:24px; text-align:center}
+  /* ---------- общие экраны ---------- */
+  .center{
+    flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:18px; padding:24px; text-align:center;
+  }
   h1{font-size:40px; margin:0; letter-spacing:.02em}
   .sub{color:var(--dim); font-size:19px; margin:0; max-width:20em; line-height:1.45}
-  .big{font-size:72px; font-weight:700; font-variant-numeric:tabular-nums}
+  .big{font-size:60px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1}
   button.go{
     border:0; border-radius:999px; padding:18px 46px; font-size:21px; font-weight:600;
-    background:var(--accent); color:#08111f; cursor:pointer;
+    background:var(--accent); color:#08111f; cursor:pointer; font-family:inherit;
   }
   button.go:active{transform:scale(.96)}
-  button.ghost{background:transparent; color:var(--dim); border:1px solid var(--line)}
+  button.ghost{
+    background:transparent; color:var(--text); border:1px solid var(--line);
+    border-radius:999px; padding:14px 32px; font-size:17px; cursor:pointer; font-family:inherit;
+  }
   .hint{position:absolute; bottom:14px; left:0; right:0; text-align:center; font-size:11px; color:#4b5364}
+
+  /* ---------- выбор языка ---------- */
+  .langbar{
+    position:absolute; top:calc(env(safe-area-inset-top) + 12px);
+    right:calc(env(safe-area-inset-right) + 16px); z-index:20;
+  }
+  .langbtn{
+    display:flex; align-items:center; gap:6px; cursor:pointer;
+    background:var(--card); border:1px solid var(--line); color:var(--text);
+    border-radius:999px; padding:8px 12px; font-size:20px; line-height:1; font-family:inherit;
+  }
+  .langbtn .chev{font-size:11px; color:var(--dim)}
+  .langmenu{
+    position:absolute; top:calc(100% + 8px); right:0; min-width:186px;
+    background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:6px; display:none; box-shadow:0 14px 40px rgba(0,0,0,.6);
+  }
+  .langmenu.on{display:block}
+  .langmenu button{
+    display:flex; align-items:center; gap:10px; width:100%;
+    background:none; border:0; color:var(--text); font:inherit; font-size:16px;
+    padding:10px 12px; border-radius:10px; cursor:pointer; text-align:left;
+  }
+  .langmenu button:hover{background:#1f2430}
+  .langmenu button.sel{color:var(--accent)}
+  .langmenu .fl{font-size:20px; line-height:1}
+
+  /* ---------- ввод имени ---------- */
+  input.name{
+    width:min(100%, 320px); padding:16px 18px; font-size:20px; font-family:inherit;
+    background:var(--card); border:2px solid var(--line); border-radius:16px;
+    color:var(--text); text-align:center; outline:none;
+  }
+  input.name:focus{border-color:var(--accent)}
+  .row{display:flex; gap:12px; align-items:center; flex-wrap:wrap; justify-content:center}
+
+  /* ---------- итог ---------- */
+  .stats{display:flex; gap:34px; justify-content:center}
+  .stat{display:flex; flex-direction:column; gap:4px}
+  .stat .lbl{font-size:13px; color:var(--dim); text-transform:uppercase; letter-spacing:.08em}
+  .stat .val{font-size:44px; font-weight:700; font-variant-numeric:tabular-nums; line-height:1}
+
+  /* ---------- таблица рекордов ---------- */
+  .tablewrap{
+    flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;
+    width:min(100%, 620px); margin:0 auto; padding:0 14px 14px;
+  }
+  table{width:100%; border-collapse:collapse; font-variant-numeric:tabular-nums}
+  th{
+    font-size:12px; color:var(--dim); text-transform:uppercase; letter-spacing:.07em;
+    text-align:left; padding:8px 8px; font-weight:600;
+    position:sticky; top:0; background:var(--bg);
+  }
+  td{padding:12px 8px; font-size:17px; border-top:1px solid var(--line)}
+  td.num, th.num{text-align:right; width:4.2em}
+  td.pl, th.pl{width:2.6em; color:var(--dim)}
+  tr.me td{background:rgba(110,168,254,.13); color:var(--accent)}
+  tr.top1 td.pl{color:#f5c451}
+  .empty{text-align:center; color:var(--dim); padding:50px 20px; font-size:17px}
+  .foot{
+    flex:0 0 auto; display:flex; gap:12px; justify-content:center;
+    padding:12px 16px calc(env(safe-area-inset-bottom) + 16px);
+  }
+  .note{font-size:12px; color:#4b5364; text-align:center; padding:0 20px 6px}
 </style>
 </head>
 <body>
 
 <!-- ================= СТАРТ ================= -->
 <section id="start" class="screen on">
+  <div class="langbar">
+    <button class="langbtn" id="langbtn" aria-label="Язык"><span id="langflag">🇷🇺</span><span class="chev">▼</span></button>
+    <div class="langmenu" id="langmenu"></div>
+  </div>
   <div class="center">
     <div style="font-size:66px">🔬</div>
     <h1>Migue</h1>
-    <p class="sub">Смотрим в микроскоп и угадываем, что это за предмет.</p>
-    <button class="go" id="btn-start">Играть</button>
+    <p class="sub" id="t-tagline"></p>
+    <button class="go" id="btn-start"></button>
+    <button class="ghost" id="btn-records-start"></button>
   </div>
-  <div class="hint">фотографии — Фёдор</div>
+  <div class="hint" id="t-photosby"></div>
 </section>
 
 <!-- ================= ИГРА ================= -->
 <section id="game" class="screen">
   <header>
-    <span class="brand">MIGUE</span>
-    <span class="score" id="score">0 / 0</span>
+    <span class="timer" id="timer">0:00</span>
+    <span class="score" id="score"></span>
   </header>
   <div class="bar"><i id="bar"></i></div>
   <main>
-    <p class="prompt">Что это под микроскопом?</p>
+    <p class="prompt" id="t-prompt"></p>
     <div class="microwrap"><img id="micro" class="micro" alt=""></div>
     <div class="options" id="options"></div>
   </main>
 </section>
 
-<!-- ================= ФИНАЛ ================= -->
-<section id="end" class="screen">
+<!-- ================= ИМЯ ================= -->
+<section id="name" class="screen">
   <div class="center">
-    <div id="emoji" style="font-size:60px"></div>
-    <div class="big" id="final"></div>
-    <p class="sub" id="verdict"></p>
-    <button class="go" id="btn-again">Ещё раз</button>
+    <div style="font-size:52px">✍️</div>
+    <h1 id="t-askname" style="font-size:28px"></h1>
+    <input class="name" id="input-name" maxlength="20" autocomplete="off" autocapitalize="words" spellcheck="false">
+    <div class="row">
+      <button class="go" id="btn-savename"></button>
+      <button class="ghost" id="btn-skipname"></button>
+    </div>
   </div>
 </section>
 
+<!-- ================= ИТОГ ================= -->
+<section id="end" class="screen">
+  <div class="center">
+    <div id="emoji" style="font-size:54px"></div>
+    <div class="stats">
+      <div class="stat"><span class="lbl" id="t-lbl-score"></span><span class="val" id="final-score"></span></div>
+      <div class="stat"><span class="lbl" id="t-lbl-time"></span><span class="val" id="final-time"></span></div>
+    </div>
+    <p class="sub" id="verdict"></p>
+    <div class="row">
+      <button class="go" id="btn-again"></button>
+      <button class="ghost" id="btn-records"></button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= РЕКОРДЫ ================= -->
+<section id="board" class="screen">
+  <header>
+    <span class="brand">MIGUE</span>
+    <span class="score" id="t-boardtitle"></span>
+  </header>
+  <div class="bar"></div>
+  <div class="tablewrap" id="boardwrap"></div>
+  <p class="note" id="t-offline"></p>
+  <div class="foot">
+    <button class="go" id="btn-play-board"></button>
+    <button class="ghost" id="btn-back"></button>
+  </div>
+</section>
+
+<script src="i18n.js"></script>
 <script src="data.js"></script>
+<script src="records.js"></script>
 <script>
 (function(){
   "use strict";
 
   const $ = s => document.querySelector(s);
   const micro = $("#micro"), optionsEl = $("#options");
-  const scoreEl = $("#score"), barEl = $("#bar");
+  const scoreEl = $("#score"), barEl = $("#bar"), timerEl = $("#timer");
 
   const nChoices = Math.min(CHOICES, ITEMS.length);
   let queue = [], idx = 0, right = 0, busy = false;
+  let startedAt = 0, elapsed = 0, tick = null;
+  let lang = DEFAULT_LANG, myKey = null;
 
+  /* ---------- вспомогательное ---------- */
   const shuffle = a => { a = a.slice();
     for (let i = a.length - 1; i > 0; i--) { const j = Math.random() * (i + 1) | 0; [a[i], a[j]] = [a[j], a[i]]; }
     return a; };
 
+  const fmt = s => Math.floor(s / 60) + ":" + String(Math.floor(s % 60)).padStart(2, "0");
+  const tr  = k => (T[lang] && T[lang][k]) || T[DEFAULT_LANG][k];
+  const title = item => item.t[lang] || item.t[DEFAULT_LANG];
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
   function show(id){ document.querySelectorAll(".screen").forEach(s => s.classList.toggle("on", s.id === id)); }
 
+  const store = {
+    get: (k, d) => { try { return localStorage.getItem(k) || d; } catch(e){ return d; } },
+    set: (k, v) => { try { localStorage.setItem(k, v); } catch(e){} },
+  };
+
+  /* ---------- язык ---------- */
+  function applyLang(){
+    document.documentElement.lang = lang;
+    $("#t-tagline").textContent      = tr("tagline");
+    $("#btn-start").textContent      = tr("play");
+    $("#btn-records-start").textContent = tr("records");
+    $("#t-photosby").textContent     = tr("photosBy");
+    $("#t-prompt").textContent       = tr("prompt");
+    $("#t-askname").textContent      = tr("askName");
+    $("#input-name").placeholder     = tr("namePh");
+    $("#btn-savename").textContent   = tr("saveBtn");
+    $("#btn-skipname").textContent   = tr("skip");
+    $("#t-lbl-score").textContent    = tr("yourScore");
+    $("#t-lbl-time").textContent     = tr("yourTime");
+    $("#btn-again").textContent      = tr("again");
+    $("#btn-records").textContent    = tr("records");
+    $("#btn-play-board").textContent = tr("play");
+    $("#btn-back").textContent       = tr("back");
+    $("#t-boardtitle").textContent   = tr("records");
+    $("#t-offline").textContent      = Records.isShared() ? "" : tr("offline");
+    const L = LANGS.find(l => l.code === lang) || LANGS[0];
+    $("#langflag").textContent = L.flag;
+    [...$("#langmenu").children].forEach(b => b.classList.toggle("sel", b.dataset.code === lang));
+  }
+
+  function buildLangMenu(){
+    const menu = $("#langmenu");
+    menu.innerHTML = "";
+    LANGS.forEach(L => {
+      const b = document.createElement("button");
+      b.dataset.code = L.code;
+      b.innerHTML = '<span class="fl">' + L.flag + '</span><span>' + L.name + '</span>';
+      b.addEventListener("click", () => {
+        lang = L.code; store.set("migue.lang", lang);
+        menu.classList.remove("on"); applyLang();
+      });
+      menu.appendChild(b);
+    });
+    $("#langbtn").addEventListener("click", e => { e.stopPropagation(); menu.classList.toggle("on"); });
+    document.addEventListener("click", () => menu.classList.remove("on"));
+  }
+
+  /* ---------- секундомер ---------- */
+  function startTimer(){
+    startedAt = performance.now(); elapsed = 0;
+    timerEl.textContent = "0:00";
+    clearInterval(tick);
+    tick = setInterval(() => {
+      elapsed = (performance.now() - startedAt) / 1000;
+      timerEl.textContent = fmt(elapsed);
+    }, 200);
+  }
+  function stopTimer(){
+    clearInterval(tick); tick = null;
+    elapsed = Math.round((performance.now() - startedAt) / 1000);
+    timerEl.textContent = fmt(elapsed);
+  }
+
+  /* ---------- игра ---------- */
   function start(){
     queue = shuffle(ITEMS);
     if (typeof ROUND === "number" && ROUND > 0) queue = queue.slice(0, ROUND);
-    idx = 0; right = 0; busy = false;
-    show("game"); render();
+    idx = 0; right = 0; busy = false; myKey = null;
+    show("game"); startTimer(); render();
   }
 
   function render(){
     const item = queue[idx];
     micro.src = "photos/micro/" + item.id + ".jpg";
-    micro.alt = "фотография с микроскопа";
+    micro.alt = tr("prompt");
 
-    // варианты: правильный + случайные другие
     const others = shuffle(ITEMS.filter(x => x.id !== item.id)).slice(0, nChoices - 1);
     const opts = shuffle([item].concat(others));
 
@@ -189,18 +373,23 @@
     opts.forEach(o => {
       const b = document.createElement("button");
       b.className = "opt";
+      b.dataset.id = o.id;
       b.innerHTML =
         '<span class="pic">' +
-          '<img src="photos/big/' + o.id + '.jpg" alt="' + o.title + '" loading="eager">' +
+          '<img src="photos/big/' + o.id + '.jpg" alt="" loading="eager">' +
           '<span class="mark"></span>' +
         '</span>' +
-        '<span class="cap">' + o.title + '</span>';
+        '<span class="cap">' + esc(title(o)) + '</span>';
       b.addEventListener("click", () => answer(b, o.id === item.id, item.id));
       optionsEl.appendChild(b);
     });
 
-    scoreEl.textContent = "✓ " + right + "  ·  " + (idx + 1) + " из " + queue.length;
+    updateScore();
     barEl.style.width = (idx / queue.length * 100) + "%";
+  }
+
+  function updateScore(){
+    scoreEl.textContent = "✓ " + right + "  ·  " + (idx + 1) + " " + tr("of") + " " + queue.length;
   }
 
   function answer(btn, ok, correctId){
@@ -209,13 +398,13 @@
     optionsEl.classList.add("locked");
 
     if (ok) right++;
-    scoreEl.textContent = "✓ " + right + "  ·  " + (idx + 1) + " из " + queue.length;
+    updateScore();
     btn.classList.add(ok ? "right" : "wrong");
     btn.querySelector(".mark").textContent = ok ? "✓" : "✕";
 
-    if (!ok) {  // подсветить правильный
+    if (!ok) {
       [...optionsEl.children].forEach(b => {
-        if (b.querySelector("img").src.includes("/" + correctId + ".jpg")) {
+        if (b.dataset.id === correctId) {
           b.classList.add("right");
           b.querySelector(".mark").textContent = "✓";
         }
@@ -225,23 +414,82 @@
 
     setTimeout(() => {
       idx++; busy = false;
-      if (idx >= queue.length) finish(); else render();
+      if (idx >= queue.length) { stopTimer(); askName(); } else render();
     }, ok ? 750 : 1500);
   }
 
-  function finish(){
-    const total = queue.length;
-    $("#final").textContent = right + " / " + total;
-    const p = right / total;
-    $("#emoji").textContent  = p === 1 ? "🏆" : p >= 0.5 ? "👍" : "🔬";
-    $("#verdict").textContent = p === 1 ? "Все верно! Идеально."
-                             : p >= 0.5 ? "Хорошо! Ещё немного тренировки."
-                             : "Попробуем ещё разок?";
-    show("end");
+  /* ---------- имя ---------- */
+  function askName(){
+    const inp = $("#input-name");
+    inp.value = store.get("migue.name", "");
+    show("name");
+    setTimeout(() => inp.focus(), 120);
   }
+
+  function saveName(save){
+    const nm = save ? $("#input-name").value.trim() : "";
+    if (nm) store.set("migue.name", nm);
+    finish(nm || "—");
+  }
+
+  /* ---------- итог ---------- */
+  function finish(name){
+    const total = queue.length;
+    $("#final-score").textContent = right + "/" + total;
+    $("#final-time").textContent  = fmt(elapsed);
+    const p = right / total;
+    $("#emoji").textContent   = p === 1 ? "🏆" : p >= 0.5 ? "👍" : "🔬";
+    $("#verdict").textContent = p === 1 ? tr("perfect") : p >= 0.5 ? tr("good") : tr("tryAgain");
+    show("end");
+
+    Records.add({ name: name, score: right, total: total, seconds: Math.round(elapsed), lang: lang })
+      .then(row => { myKey = row && (row.key || row.id || null); })
+      .catch(() => {});
+  }
+
+  /* ---------- таблица рекордов ---------- */
+  function openBoard(){
+    show("board");
+    const wrap = $("#boardwrap");
+    wrap.innerHTML = '<p class="empty">' + tr("loading") + '</p>';
+    Records.top(SORT).then(rows => {
+      if (!rows.length) { wrap.innerHTML = '<p class="empty">' + tr("noRecords") + '</p>'; return; }
+      let html = '<table><thead><tr>' +
+        '<th class="pl">' + tr("tblPlace") + '</th>' +
+        '<th>' + tr("tblName") + '</th>' +
+        '<th class="num">' + tr("tblScore") + '</th>' +
+        '<th class="num">' + tr("tblTime") + '</th>' +
+        '</tr></thead><tbody>';
+      rows.forEach((r, i) => {
+        const mine = myKey && (r.key === myKey || r.id === myKey);
+        html += '<tr class="' + (mine ? "me " : "") + (i === 0 ? "top1" : "") + '">' +
+          '<td class="pl">' + (i + 1) + '</td>' +
+          '<td>' + esc(r.name) + '</td>' +
+          '<td class="num">' + r.score + "/" + r.total + '</td>' +
+          '<td class="num">' + fmt(r.seconds) + '</td>' +
+        '</tr>';
+      });
+      wrap.innerHTML = html + "</tbody></table>";
+      const me = wrap.querySelector("tr.me");
+      if (me) me.scrollIntoView({ block: "center" });
+    });
+  }
+
+  /* ---------- запуск ---------- */
+  buildLangMenu();
+  lang = store.get("migue.lang", DEFAULT_LANG);
+  if (!T[lang]) lang = DEFAULT_LANG;
+  applyLang();
 
   $("#btn-start").addEventListener("click", start);
   $("#btn-again").addEventListener("click", start);
+  $("#btn-play-board").addEventListener("click", start);
+  $("#btn-records").addEventListener("click", openBoard);
+  $("#btn-records-start").addEventListener("click", openBoard);
+  $("#btn-back").addEventListener("click", () => show("start"));
+  $("#btn-savename").addEventListener("click", () => saveName(true));
+  $("#btn-skipname").addEventListener("click", () => saveName(false));
+  $("#input-name").addEventListener("keydown", e => { if (e.key === "Enter") saveName(true); });
 
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(()=>{}));

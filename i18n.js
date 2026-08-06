@@ -1,0 +1,103 @@
+// ===================================================================
+//  ЯЗЫКИ ИНТЕРФЕЙСА
+//  Названия предметов лежат отдельно, в data.js
+// ===================================================================
+
+const LANGS = [
+  { code: "ru", flag: "🇷🇺", name: "Русский" },
+  { code: "en", flag: "🇬🇧", name: "English" },
+  { code: "fr", flag: "🇫🇷", name: "Français" },
+  { code: "de", flag: "🇩🇪", name: "Deutsch" },
+  { code: "tr", flag: "🇹🇷", name: "Türkçe" },
+  { code: "es", flag: "🇪🇸", name: "Español" },
+  { code: "it", flag: "🇮🇹", name: "Italiano" },
+];
+
+const DEFAULT_LANG = "ru";
+
+const T = {
+  ru: {
+    tagline: "Смотрим в микроскоп и угадываем, что это за предмет.",
+    play: "Играть", prompt: "Что это под микроскопом?", of: "из",
+    photosBy: "фотографии — Фёдор",
+    askName: "Как тебя зовут?", namePh: "Имя", saveBtn: "Сохранить", skip: "Пропустить",
+    yourTime: "Время", yourScore: "Угадано",
+    perfect: "Все верно! Идеально.", good: "Хорошо! Ещё немного тренировки.", tryAgain: "Попробуем ещё разок?",
+    again: "Ещё раз", records: "Рекорды", back: "Назад",
+    tblPlace: "#", tblName: "Имя", tblScore: "Очки", tblTime: "Время",
+    noRecords: "Пока никто не играл. Будь первым!",
+    loading: "Загружаю…", offline: "Рекорды сохранены только на этом устройстве",
+  },
+  en: {
+    tagline: "Look through the microscope and guess what it is.",
+    play: "Play", prompt: "What is this under the microscope?", of: "of",
+    photosBy: "photos by Fyodor",
+    askName: "What's your name?", namePh: "Name", saveBtn: "Save", skip: "Skip",
+    yourTime: "Time", yourScore: "Correct",
+    perfect: "All correct! Perfect.", good: "Nice! A bit more practice.", tryAgain: "Let's try again?",
+    again: "Play again", records: "High scores", back: "Back",
+    tblPlace: "#", tblName: "Name", tblScore: "Score", tblTime: "Time",
+    noRecords: "Nobody has played yet. Be the first!",
+    loading: "Loading…", offline: "Scores are saved on this device only",
+  },
+  fr: {
+    tagline: "Regarde au microscope et devine ce que c'est.",
+    play: "Jouer", prompt: "Qu'est-ce que c'est au microscope ?", of: "sur",
+    photosBy: "photos — Fiodor",
+    askName: "Comment t'appelles-tu ?", namePh: "Prénom", saveBtn: "Enregistrer", skip: "Passer",
+    yourTime: "Temps", yourScore: "Trouvés",
+    perfect: "Tout juste ! Parfait.", good: "Bien ! Encore un peu d'entraînement.", tryAgain: "On réessaie ?",
+    again: "Rejouer", records: "Records", back: "Retour",
+    tblPlace: "#", tblName: "Nom", tblScore: "Points", tblTime: "Temps",
+    noRecords: "Personne n'a encore joué. Sois le premier !",
+    loading: "Chargement…", offline: "Records enregistrés sur cet appareil uniquement",
+  },
+  de: {
+    tagline: "Schau durchs Mikroskop und rate, was es ist.",
+    play: "Spielen", prompt: "Was ist das unter dem Mikroskop?", of: "von",
+    photosBy: "Fotos — Fjodor",
+    askName: "Wie heißt du?", namePh: "Name", saveBtn: "Speichern", skip: "Überspringen",
+    yourTime: "Zeit", yourScore: "Richtig",
+    perfect: "Alles richtig! Perfekt.", good: "Gut! Noch ein bisschen üben.", tryAgain: "Noch mal versuchen?",
+    again: "Noch mal", records: "Bestenliste", back: "Zurück",
+    tblPlace: "#", tblName: "Name", tblScore: "Punkte", tblTime: "Zeit",
+    noRecords: "Noch niemand hat gespielt. Sei der Erste!",
+    loading: "Lädt…", offline: "Ergebnisse nur auf diesem Gerät gespeichert",
+  },
+  tr: {
+    tagline: "Mikroskoba bak ve bunun ne olduğunu tahmin et.",
+    play: "Oyna", prompt: "Mikroskop altındaki bu şey ne?", of: "/",
+    photosBy: "fotoğraflar — Fyodor",
+    askName: "Adın ne?", namePh: "İsim", saveBtn: "Kaydet", skip: "Atla",
+    yourTime: "Süre", yourScore: "Doğru",
+    perfect: "Hepsi doğru! Mükemmel.", good: "Güzel! Biraz daha pratik.", tryAgain: "Tekrar deneyelim mi?",
+    again: "Tekrar oyna", records: "Rekorlar", back: "Geri",
+    tblPlace: "#", tblName: "İsim", tblScore: "Puan", tblTime: "Süre",
+    noRecords: "Henüz kimse oynamadı. İlk sen ol!",
+    loading: "Yükleniyor…", offline: "Sonuçlar yalnızca bu cihazda saklanıyor",
+  },
+  es: {
+    tagline: "Mira por el microscopio y adivina qué es.",
+    play: "Jugar", prompt: "¿Qué es esto bajo el microscopio?", of: "de",
+    photosBy: "fotos — Fiódor",
+    askName: "¿Cómo te llamas?", namePh: "Nombre", saveBtn: "Guardar", skip: "Saltar",
+    yourTime: "Tiempo", yourScore: "Aciertos",
+    perfect: "¡Todo correcto! Perfecto.", good: "¡Bien! Un poco más de práctica.", tryAgain: "¿Probamos otra vez?",
+    again: "Jugar otra vez", records: "Récords", back: "Atrás",
+    tblPlace: "#", tblName: "Nombre", tblScore: "Puntos", tblTime: "Tiempo",
+    noRecords: "Todavía nadie ha jugado. ¡Sé el primero!",
+    loading: "Cargando…", offline: "Los récords se guardan solo en este dispositivo",
+  },
+  it: {
+    tagline: "Guarda al microscopio e indovina che cos'è.",
+    play: "Gioca", prompt: "Che cos'è al microscopio?", of: "di",
+    photosBy: "foto — Fëdor",
+    askName: "Come ti chiami?", namePh: "Nome", saveBtn: "Salva", skip: "Salta",
+    yourTime: "Tempo", yourScore: "Indovinati",
+    perfect: "Tutto giusto! Perfetto.", good: "Bene! Ancora un po' di pratica.", tryAgain: "Riproviamo?",
+    again: "Gioca ancora", records: "Record", back: "Indietro",
+    tblPlace: "#", tblName: "Nome", tblScore: "Punti", tblTime: "Tempo",
+    noRecords: "Non ha ancora giocato nessuno. Sii il primo!",
+    loading: "Caricamento…", offline: "I record sono salvati solo su questo dispositivo",
+  },
+};
