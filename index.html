@@ -443,7 +443,7 @@
     show("end");
 
     Records.add({ name: name, score: right, total: total, seconds: Math.round(elapsed), lang: lang })
-      .then(row => { myKey = row && (row.key || row.id || null); })
+      .then(row => { myKey = row ? (row.id != null ? row.id : row.key) : null; })
       .catch(() => {});
   }
 

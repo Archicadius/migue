@@ -6,8 +6,8 @@
 //  таблица автоматически станет общей для всех игроков.
 // ===================================================================
 
-const SUPABASE_URL = "";   // например "https://xxxx.supabase.co"
-const SUPABASE_KEY = "";   // публичный anon key
+const SUPABASE_URL = "https://mzxghnijzuijvaiuyrjl.supabase.co";
+const SUPABASE_KEY = "sb_publishable_Rvd2sLCDPDrGoGHYpY26TQ_rjKnQJPs";
 const TABLE        = "scores";
 const LIMIT        = 50;   // сколько строк показывать
 
@@ -31,14 +31,17 @@ const Records = (function () {
 
   // --- Supabase (REST) ---------------------------------------------
   function api(path, opts) {
-    return fetch(SUPABASE_URL + "/rest/v1/" + path, Object.assign({
-      headers: {
-        "apikey": SUPABASE_KEY,
-        "Authorization": "Bearer " + SUPABASE_KEY,
-        "Content-Type": "application/json",
-        "Prefer": "return=representation",
-      },
-    }, opts)).then(r => {
+    const headers = {
+      "apikey": SUPABASE_KEY,
+      "Content-Type": "application/json",
+      "Prefer": "return=representation",
+    };
+    // старые ключи (anon) — это JWT, их надо слать ещё и как Bearer;
+    // новые (sb_publishable_) достаточно передать в apikey
+    if (SUPABASE_KEY.startsWith("ey")) headers["Authorization"] = "Bearer " + SUPABASE_KEY;
+
+    return fetch(SUPABASE_URL + "/rest/v1/" + path,
+      Object.assign({ headers: headers }, opts)).then(r => {
       if (!r.ok) throw new Error("supabase " + r.status);
       return r.json();
     });
